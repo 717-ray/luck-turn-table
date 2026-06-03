@@ -1,0 +1,246 @@
+/**annual.wxss**/
+
+page {
+  background: #fce4ec;
+  min-height: 100vh;
+}
+
+.container {
+  min-height: 100vh;
+  padding: 120rpx 30rpx 160rpx;
+  box-sizing: border-box;
+  background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 50%, #f48fb1 100%);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 40rpx;
+}
+
+.title {
+  font-size: 48rpx;
+  font-weight: 800;
+  color: #c2185b;
+  margin-bottom: 12rpx;
+  text-shadow: 0 0 30rpx rgba(233, 30, 99, 0.3);
+}
+
+.subtitle {
+  font-size: 26rpx;
+  color: rgba(136, 14, 79, 0.7);
+}
+
+.stats-cards {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 30rpx;
+}
+
+.stat-card {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 24rpx;
+  padding: 30rpx;
+  text-align: center;
+  box-shadow: 0 4rpx 20rpx rgba(233, 30, 99, 0.12);
+}
+
+.stat-card.highlight {
+  background: linear-gradient(135deg, #ec407a, #f06292);
+}
+
+.stat-value {
+  font-size: 56rpx;
+  font-weight: 800;
+  color: #c2185b;
+  margin-bottom: 8rpx;
+}
+
+.stat-card.highlight .stat-value {
+  color: #fff;
+}
+
+.stat-value.emoji {
+  font-size: 64rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: rgba(136, 14, 79, 0.6);
+}
+
+.stat-card.highlight .stat-label {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.stat-text {
+  font-size: 26rpx;
+  color: #fff;
+  margin-top: 12rpx;
+  font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.section {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 24rpx;
+  padding: 30rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 20rpx rgba(233, 30, 99, 0.12);
+}
+
+.section-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #880e4f;
+  margin-bottom: 24rpx;
+}
+
+.month-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.month-item {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.month-label {
+  width: 100rpx;
+  font-size: 24rpx;
+  color: rgba(136, 14, 79, 0.6);
+}
+
+.month-bar-wrapper {
+  flex: 1;
+  height: 24rpx;
+  background: rgba(233, 30, 99, 0.08);
+  border-radius: 12rpx;
+  overflow: hidden;
+}
+
+.month-bar {
+  height: 100%;
+  background: linear-gradient(135deg, #ec407a, #f06292);
+  border-radius: 12rpx;
+  transition: width 0.3s ease;
+}
+
+.month-count {
+  width: 80rpx;
+  font-size: 24rpx;
+  color: #c2185b;
+  text-align: right;
+}
+
+.rank-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.rank-item {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.rank-badge {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  background: rgba(233, 30, 99, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  font-weight: bold;
+  color: #c2185b;
+}
+
+.rank-badge.top1 {
+  background: linear-gradient(135deg, #ffd700, #ffb300);
+  color: #fff;
+}
+
+.rank-badge.top2 {
+  background: linear-gradient(135deg, #c0c0c0, #a0a0a0);
+  color: #fff;
+}
+
+.rank-badge.top3 {
+  background: linear-gradient(135deg, #cd7f32, #a0522d);
+  color: #fff;
+}
+
+.rank-content {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rank-choice {
+  font-size: 28rpx;
+  color: #880e4f;
+}
+
+.rank-count {
+  font-size: 24rpx;
+  color: rgba(136, 14, 79, 0.6);
+}
+
+.record-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.record-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 20rpx;
+  background: rgba(233, 30, 99, 0.05);
+  border-radius: 12rpx;
+}
+
+.record-date {
+  font-size: 24rpx;
+  color: rgba(136, 14, 79, 0.6);
+}
+
+.record-result {
+  font-size: 28rpx;
+  color: #c2185b;
+  font-weight: bold;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 0;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 30rpx;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #c2185b;
+  margin-bottom: 12rpx;
+}
+
+.empty-hint {
+  font-size: 26rpx;
+  color: rgba(136, 14, 79, 0.6);
+}

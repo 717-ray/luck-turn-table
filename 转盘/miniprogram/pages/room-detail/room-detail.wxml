@@ -1,0 +1,148 @@
+<!-- pages/room-detail/room-detail.wxml -->
+<view class="container {{theme}}">
+
+  <!-- 昵称输入弹窗 -->
+  <view class="name-modal" wx:if="{{showNameModal}}">
+    <view class="name-card">
+      <text class="name-title">👋 设置你的昵称</text>
+      <input
+        class="name-input"
+        placeholder="请输入昵称"
+        placeholder-style="color: rgba(0,0,0,0.25)"
+        value="{{nickname}}"
+        bindinput="onNameInput"
+        maxlength="12"
+        focus="{{true}}"
+      />
+      <button class="name-btn" bindtap="onNameConfirm">确认加入</button>
+    </view>
+  </view>
+
+  <!-- 组队头部 -->
+  <view class="room-header">
+    <view class="header-top">
+      <view class="back-btn" bindtap="leaveRoom">
+        <text>← 返回</text>
+      </view>
+      <button class="share-btn" open-type="share">
+        📤 分享
+      </button>
+    </view>
+    <view class="room-title">{{roomName}}</view>
+    <view class="room-meta">
+      <text class="room-code-tag">组队码：{{code}}</text>
+      <text class="room-status status-{{status}}">
+        {{status === 'waiting' ? '🟢 提交中' : status === 'spinning' ? '🔄 转动中' : '✅ 已完成'}}
+      </text>
+    </view>
+    <!-- 成员列表 -->
+    <view class="members-row" wx:if="{{members.length > 0}}">
+      <text wx:for="{{members}}" wx:key="*this" class="member-tag">{{item}}</text>
+    </view>
+  </view>
+
+  <!-- 转盘区域 -->
+  <view class="wheel-section">
+    <!-- 外圈光晕 -->
+    <view class="wheel-glow"></view>
+
+    <!-- 指针 -->
+    <view class="pointer {{isSpinning ? 'spinning' : ''}}">
+      <view class="pointer-inner"></view>
+    </view>
+
+    <!-- Canvas 转盘 -->
+    <canvas
+      type="2d"
+      id="roomWheelCanvas"
+      class="wheel-canvas"
+      style="width: {{canvasSize}}px; height: {{canvasSize}}px;"
+    ></canvas>
+
+    <!-- 中心圆 -->
+    <view class="wheel-center">
+      <view class="wheel-center-inner">转</view>
+    </view>
+
+    <!-- 转盘边框 -->
+    <view class="wheel-border" style="width: {{canvasSize + 8}}px; height: {{canvasSize + 8}}px;"></view>
+
+    <!-- 换色按钮 -->
+    <view class="color-btn" bindtap="changeColors">
+      <text>🎨</text>
+    </view>
+
+    <!-- 结果展示 -->
+    <view class="result-banner" wx:if="{{showResult}}">
+      <text class="result-emoji">🎉</text>
+      <text class="result-text">{{result}}</text>
+      <text class="result-hint">天意如此！</text>
+    </view>
+  </view>
+
+  <!-- 选项列表 -->
+  <view class="options-panel">
+    <view class="panel-title">
+      <text>📋 当前选项（{{options.length}}）</text>
+    </view>
+    <scroll-view class="options-scroll" scroll-y wx:if="{{options.length > 0}}">
+      <view class="op-item" wx:for="{{optionUsers}}" wx:key="nickname">
+        <text class="op-emoji">{{optionEmojis[index]}}</text>
+        <text class="op-text">{{item.text}}</text>
+        <text class="op-user">— {{item.nickname}}</text>
+      </view>
+    </scroll-view>
+    <view class="empty-options" wx:else>
+      <text>还没有人提交选项，快来第一个吧！</text>
+    </view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-bar">
+    <!-- 等待提交状态 -->
+    <block wx:if="{{status === 'waiting'}}">
+      <view class="vote-row" wx:if="{{!myVoteSubmitted}}">
+        <input
+          class="vote-input"
+          placeholder="输入你想吃的 / 想选的…"
+          placeholder-style="color: rgba(0,0,0,0.25)"
+          value="{{myVote}}"
+          bindinput="onVoteInput"
+          maxlength="20"
+          confirm-type="done"
+          bindconfirm="submitVote"
+        />
+        <button class="vote-btn" bindtap="submitVote">提交</button>
+      </view>
+      <view wx:else class="voted-hint">✅ 你已提交，等待房主开转…</view>
+
+      <!-- 房主开转按钮 -->
+      <button
+        wx:if="{{isOwner && options.length >= 2}}"
+        class="spin-btn"
+        bindtap="startRoomSpin"
+      >
+        🎯 开转！
+      </button>
+      <view wx:elif="{{isOwner}}" class="spin-hint">
+        等待至少2个选项后即可开转
+      </view>
+    </block>
+
+    <!-- 转动中 -->
+    <view wx:elif="{{status === 'spinning'}}" class="spinning-hint">
+      <text>🔄 命运之轮转动中…</text>
+    </view>
+
+    <!-- 已完成 -->
+    <view wx:else class="finished-bar">
+      <text class="finished-result">🎉 最终决定：{{result}}</text>
+      <button
+        wx:if="{{isOwner}}"
+        class="spin-again-btn"
+        bindtap="resetRoomSpin"
+      >🔄 再来一局</button>
+      <text wx:else class="finished-hint">等待房主开启新一轮</text>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,68 @@
+<view class="container">
+  <view class="header">
+    <view class="title">{{currentYear}} 年度总结</view>
+    <view class="subtitle">看看你今年都纠结了什么</view>
+  </view>
+
+  <!-- 年度统计卡片 -->
+  <view class="stats-cards">
+    <view class="stat-card">
+      <view class="stat-value">{{annualStats.totalSpins}}</view>
+      <view class="stat-label">转盘次数</view>
+    </view>
+    <view class="stat-card highlight">
+      <view class="stat-value emoji">🎯</view>
+      <view class="stat-label">最高频选择</view>
+      <view class="stat-text">{{annualStats.mostChosen || '暂无数据'}}</view>
+    </view>
+  </view>
+
+  <!-- 月度趋势 -->
+  <view class="section" wx:if="{{monthlyData.length > 0}}">
+    <view class="section-title">📈 月度趋势</view>
+    <view class="month-list">
+      <view class="month-item" wx:for="{{monthlyData}}" wx:key="month">
+        <text class="month-label">{{item.month}}</text>
+        <view class="month-bar-wrapper">
+          <view 
+            class="month-bar" 
+            style="width: {{item.count / annualStats.totalSpins * 100}}%"
+          ></view>
+        </view>
+        <text class="month-count">{{item.count}}次</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 选项排行榜 -->
+  <view class="section" wx:if="{{topChoices.length > 0}}">
+    <view class="section-title">🏆 选择排行榜</view>
+    <view class="rank-list">
+      <view class="rank-item" wx:for="{{topChoices}}" wx:key="choice">
+        <view class="rank-badge {{index < 3 ? 'top' + (index + 1) : ''}}">{{index + 1}}</view>
+        <view class="rank-content">
+          <text class="rank-choice">{{item.choice}}</text>
+          <text class="rank-count">{{item.count}}次</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 历史记录 -->
+  <view class="section" wx:if="{{yearlyRecords.length > 0}}">
+    <view class="section-title">📋 最近记录</view>
+    <view class="record-list">
+      <view class="record-item" wx:for="{{yearlyRecords}}" wx:key="index">
+        <view class="record-date">{{item.date}}</view>
+        <view class="record-result">{{item.result}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{annualStats.totalSpins === 0}}">
+    <text class="empty-icon">🎡</text>
+    <text class="empty-text">今年还没用过转盘呢</text>
+    <text class="empty-hint">快去转一个吧～</text>
+  </view>
+</view>

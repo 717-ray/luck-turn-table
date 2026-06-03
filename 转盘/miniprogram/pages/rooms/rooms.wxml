@@ -1,0 +1,150 @@
+<!-- pages/rooms/rooms.wxml — 年度/月度命运报告 -->
+<view class="container {{theme}}">
+  <!-- 头部 -->
+  <view class="header">
+    <view class="header-title">📊 命运报告</view>
+    <view class="header-sub">记录每一次转盘，读懂你的命运轨迹</view>
+  </view>
+
+  <!-- 年度/月度切换 -->
+  <view class="mode-switch">
+    <view class="mode-tab {{viewMode === 'annual' ? 'active' : ''}}" bindtap="switchViewMode" data-mode="annual">年度报告</view>
+    <view class="mode-tab {{viewMode === 'monthly' ? 'active' : ''}}" bindtap="switchViewMode" data-mode="monthly">月度报告</view>
+  </view>
+
+  <!-- 年份选择器（仅年度） -->
+  <view class="year-picker" wx:if="{{viewMode === 'annual'}}">
+    <view class="year-arrow" bindtap="prevYear">◀</view>
+    <text class="year-text">{{selectedYear}} 年</text>
+    <view class="year-arrow" bindtap="nextYear">▶</view>
+  </view>
+
+  <!-- 月份选择器（仅月度） -->
+  <view class="month-picker" wx:if="{{viewMode === 'monthly'}}">
+    <view class="year-arrow" bindtap="prevYear">◀</view>
+    <text class="year-text">{{selectedYear}} 年</text>
+    <view class="year-arrow" bindtap="nextYear">▶</view>
+  </view>
+  <view class="month-grid" wx:if="{{viewMode === 'monthly'}}">
+    <view
+      wx:for="{{[1,2,3,4,5,6,7,8,9,10,11,12]}}"
+      wx:key="*this"
+      class="month-cell {{selectedMonth === item ? 'active' : ''}}"
+      bindtap="selectMonth"
+      data-month="{{item}}"
+    >{{item}}月</view>
+  </view>
+
+  <!-- 加载中 -->
+  <view class="loading-block" wx:if="{{loading}}">
+    <text class="loading-text">🔮 正在生成你的命运报告...</text>
+  </view>
+
+  <!-- 无数据 -->
+  <view class="empty-block" wx:elif="{{!hasData}}">
+    <view class="empty-icon">📭</view>
+    <text class="empty-text">暂无{{viewMode === 'annual' ? selectedYear + '年' : selectedYear + '年' + selectedMonth + '月'}}的转盘记录</text>
+    <text class="empty-hint">去转一转，你的命运报告就会在这里生成</text>
+  </view>
+
+  <!-- 报告内容 -->
+  <block wx:else>
+    <!-- 称号卡片 -->
+    <view class="title-card">
+      <text class="title-text">{{report.title}}</text>
+      <text class="title-sub">{{report.subtitle}}</text>
+    </view>
+
+    <!-- 核心数据 -->
+    <view class="stats-grid">
+      <view class="stat-card">
+        <text class="stat-num">{{report.totalSpins}}</text>
+        <text class="stat-label">总转动次数</text>
+      </view>
+      <view class="stat-card">
+        <text class="stat-num">{{report.giveUpRatePercent}}</text>
+        <text class="stat-label">放弃率</text>
+      </view>
+      <view class="stat-card">
+        <text class="stat-num">{{report.totalDays}}</text>
+        <text class="stat-label">活跃天数</text>
+      </view>
+      <view class="stat-card">
+        <text class="stat-num">{{report.avgOptionsPerSpinStr}}</text>
+        <text class="stat-label">平均选项数</text>
+      </view>
+    </view>
+
+    <!-- 最纠结的一天 -->
+    <view class="highlight-card">
+      <text class="hl-emoji">🤔</text>
+      <view class="hl-content">
+        <text class="hl-title">最纠结的一天</text>
+        <text class="hl-desc">{{report.mostIndecisiveDay.date}}，那天你转了 <text class="hl-num">{{report.mostIndecisiveDay.count}}</text> 次转盘</text>
+      </view>
+    </view>
+
+    <!-- 最爱 & 最冷 -->
+    <view class="dual-cards">
+      <view class="dual-card love">
+        <text class="dc-emoji">❤️</text>
+        <text class="dc-title">最爱之选</text>
+        <text class="dc-value">{{report.mostChosenResult.text}}</text>
+        <text class="dc-count">出现 {{report.mostChosenResult.count}} 次</text>
+      </view>
+      <view class="dual-card cold">
+        <text class="dc-emoji">🥶</text>
+        <text class="dc-title">最冷之选</text>
+        <text class="dc-value">{{report.leastChosenResult.text}}</text>
+        <text class="dc-count">出现 {{report.leastChosenResult.count}} 次</text>
+      </view>
+    </view>
+
+    <!-- 放弃统计 -->
+    <view class="giveup-card" wx:if="{{report.giveUpCount > 0}}">
+      <text class="gu-emoji">🕊️</text>
+      <view class="gu-content">
+        <text class="gu-title">你一共「放弃」了 {{report.giveUpCount}} 次</text>
+        <text class="gu-desc">有 {{report.giveUpRatePercent}} 的时间选择了放弃，天意也拿你没办法</text>
+      </view>
+    </view>
+
+    <!-- 热门 Top 5 -->
+    <view class="top5-section" wx:if="{{report.topResults.length > 0}}">
+      <text class="section-title">🏆 热门选项 TOP 5</text>
+      <view class="top5-list">
+        <view class="top5-item" wx:for="{{report.topResults}}" wx:key="text">
+          <text class="top5-rank">#{{index + 1}}</text>
+          <text class="top5-text">{{item.text}}</text>
+          <view class="top5-bar-wrap">
+            <view class="top5-bar" style="width: {{item.percentWidth}}%"></view>
+          </view>
+          <text class="top5-count">{{item.count}}次</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 月度热力（仅年度报告） -->
+    <view class="monthly-section" wx:if="{{viewMode === 'annual' && report.monthlySummary.length > 0}}">
+      <text class="section-title">📅 月度转动热力</text>
+      <view class="monthly-grid">
+        <view class="monthly-cell" wx:for="{{report.monthlySummary}}" wx:key="month">
+          <text class="mo-label">{{item.label}}</text>
+          <view class="mo-bar-wrap">
+            <view class="mo-bar" style="width: {{item.barWidth}}%; height: {{item.barHeight}}rpx;"></view>
+          </view>
+          <text class="mo-count">{{item.total}}次</text>
+          <text class="mo-top" wx:if="{{item.total > 0}}">最爱：{{item.topResult}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 时间范围 -->
+    <view class="footer-card">
+      <text class="footer-text">📅 记录时间：{{report.firstSpinDate}} ～ {{report.lastSpinDate}}</text>
+    </view>
+  </block>
+
+  <!-- 底部间距 -->
+  <view class="bottom-spacer"></view>
+</view>

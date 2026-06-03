@@ -1,0 +1,141 @@
+<!--pages/list/list.wxml-->
+<view class="container {{theme}}">
+  <!-- 二级标签导航 -->
+  <view class="tab-nav">
+    <view 
+      class="tab-item {{activeTab === 'default' ? '' : 'active'}}"
+      data-tab="hot"
+      bindtap="switchTab"
+    >
+      <text>热门转盘</text>
+    </view>
+    <view 
+      class="tab-item {{activeTab === 'default' ? 'active' : ''}}"
+      data-tab="default"
+      bindtap="switchTab"
+    >
+      <text>热门主题</text>
+    </view>
+  </view>
+
+  <!-- 列表内容区 -->
+  <scroll-view class="list-scroll" scroll-y enhanced show-scrollbar="{{false}}">
+    <view 
+      class="list-item {{item.isCustom ? 'custom-item' : ''}}"
+      wx:for="{{displayPresets}}"
+      wx:key="type"
+      bindtap="onTapPreset"
+      data-type="{{item.type}}"
+      wx:if="{{activeTab === 'hot' || !item.isCustom}}"
+    >
+      <!-- 左侧：emoji 图标 + 文字 -->
+      <view 
+        class="item-left"
+        bindlongpress="{{item.isCustom ? 'onLongPressCustom' : ''}}"
+        data-type="{{item.type}}"
+      >
+        <view class="item-icon">{{item.emoji}}</view>
+        <view class="item-info">
+          <text class="item-name">{{item.name}}</text>
+          <text class="item-count" wx:if="{{activeTab === 'hot' && !item.isCustom}}">{{item.options.length}} 个选项</text>
+          <text class="item-count item-custom-options" wx:if="{{activeTab === 'hot' && item.isCustom}}">{{item.options.join('、')}}</text>
+          <text class="item-count item-theme-tag" wx:else>免费</text>
+        </view>
+      </view>
+
+      <!-- 右侧 -->
+      <!-- 自定义转盘：编辑按钮 -->
+      <view 
+        wx:if="{{item.isCustom}}"
+        class="item-edit-btn"
+        catchtap="onLongPressCustom"
+        data-type="{{item.type}}"
+      >
+        <text class="edit-icon-text">✎</text>
+      </view>
+
+      <!-- 内置转盘：收藏按钮 -->
+      <view 
+        wx:elif="{{activeTab === 'hot'}}"
+        class="item-favorite {{item.favorited ? 'favorited' : ''}}"
+        catchtap="toggleFavorite"
+        data-type="{{item.type}}"
+      >
+        <text class="star-icon">{{item.favorited ? '★' : '☆'}}</text>
+      </view>
+    </view>
+
+    <!-- 自定义转盘入口（仅热门转盘Tab） -->
+    <view 
+      wx:if="{{activeTab === 'hot'}}"
+      class="list-item custom-add"
+      bindtap="onTapCustom"
+    >
+      <view class="item-left">
+        <view class="item-icon custom-icon">✏️</view>
+        <view class="item-info">
+          <text class="item-name">自定义转盘</text>
+          <text class="item-count item-custom-hint">输入自己的选项</text>
+        </view>
+      </view>
+      <view class="custom-arrow">➕</view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{displayPresets.length === 0}}">
+      <text class="empty-icon">📋</text>
+      <text class="empty-text">暂无模板</text>
+      <text class="empty-hint">去转盘页创建自定义转盘吧</text>
+    </view>
+
+    <!-- 底部安全区 -->
+    <view class="bottom-safe"></view>
+  </scroll-view>
+
+  <!-- ========== 自定义转盘弹窗 ========== -->
+  <view class="modal-overlay {{showModal ? 'show' : ''}}" bindtap="onCloseModal">
+    <view class="modal-card" catchtap="noop">
+      <view class="modal-header">
+        <text class="modal-title">{{modalMode === 'create' ? '创建自定义转盘' : '编辑转盘'}}</text>
+        <view class="modal-close" bindtap="onCloseModal">
+          <text>✕</text>
+        </view>
+      </view>
+
+      <view class="modal-body">
+        <!-- 名称输入 -->
+        <view class="form-group">
+          <text class="form-label">转盘名称</text>
+          <input 
+            class="form-input" 
+            placeholder="例如：周末去哪玩"
+            placeholder-style="color: rgba(0,0,0,0.25)"
+            value="{{customName}}"
+            bindinput="onNameInput"
+            maxlength="20"
+          />
+        </view>
+
+        <!-- 选项输入 -->
+        <view class="form-group">
+          <text class="form-label">转盘选项（用"，"连接，至少2个）</text>
+          <input 
+            class="form-input"
+            placeholder="例如：吃火锅，看电影，去爬山，宅家打游戏"
+            placeholder-style="color: rgba(0,0,0,0.25)"
+            value="{{customOptions}}"
+            bindinput="onOptionsInput"
+            maxlength="500"
+          />
+        </view>
+      </view>
+
+      <view class="modal-footer">
+        <button class="modal-btn cancel-btn" bindtap="onCloseModal">取消</button>
+        <button class="modal-btn save-btn" bindtap="onSaveCustom">
+          {{modalMode === 'create' ? '创建' : '保存'}}
+        </button>
+      </view>
+    </view>
+  </view>
+</view>

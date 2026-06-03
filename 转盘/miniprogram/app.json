@@ -1,0 +1,56 @@
+{
+  "cloud": true,
+  "entryPagePath": "pages/index/index",
+  "pages": [
+    "pages/list/list",
+    "pages/index/index",
+    "pages/rooms/rooms",
+    "pages/room-detail/room-detail",
+    "pages/annual/annual",
+    "pages/logs/logs"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationStyle": "custom"
+  },
+  "tabBar": {
+    "color": "#999",
+    "selectedColor": "#1677FF",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "转盘",
+        "iconPath": "pages/index/tab-wheel.png",
+        "selectedIconPath": "pages/index/tab-wheel-active.png"
+      },
+      {
+        "pagePath": "pages/list/list",
+        "text": "列表",
+        "iconPath": "pages/list/tab-list.png",
+        "selectedIconPath": "pages/list/tab-list-active.png"
+      },
+      {
+        "pagePath": "pages/rooms/rooms",
+        "text": "报告",
+        "iconPath": "pages/rooms/tab-rooms.png",
+        "selectedIconPath": "pages/rooms/tab-rooms-active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "rendererOptions": {
+    "skyline": {
+      "defaultDisplayBlock": true,
+      "defaultContentBox": true,
+      "tagNameStyleIsolation": "legacy",
+      "disableABTest": true,
+      "sdkVersionBegin": "3.0.0",
+      "sdkVersionEnd": "15.255.255"
+    }
+  },
+  "componentFramework": "glass-easel",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

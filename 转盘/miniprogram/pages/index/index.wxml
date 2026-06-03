@@ -1,0 +1,147 @@
+<!--index.wxml-->
+<view class="container {{theme}}">
+  <!-- 背景装饰 -->
+  <view class="bg-decoration"></view>
+  
+  <!-- 引导提示 -->
+  <view class="guide-tip" wx:if="{{showGuide}}" bindtap="closeGuide">
+    <text>{{shakeTip}}</text>
+    <text class="guide-close">知道了</text>
+  </view>
+
+  <!-- 顶部安全区 -->
+  <view class="status-bar"></view>
+
+  <!-- 标题区域 -->
+  <view class="header">
+    <view class="title" bindtap="onTitleTap">🎡命运大转盘</view>
+    <view class="subtitle">把纠结交给天意</view>
+    <view class="theme-hint">双击标题换肤</view>
+  </view>
+
+  <!-- 转盘区域 -->
+  <view class="wheel-wrapper">
+    <!-- 外圈装饰 -->
+    <view class="wheel-glow"></view>
+    
+    <!-- 指针 -->
+    <view class="pointer {{isSpinning ? 'spinning' : ''}}">
+      <view class="pointer-inner"></view>
+      <view class="pointer-outer"></view>
+    </view>
+    
+    <!-- Canvas 转盘 -->
+    <canvas 
+      class="wheel-canvas {{isSpinning ? 'spinning' : ''}}" 
+      canvas-id="wheelCanvas"
+      style="width: 300px; height: 300px;"
+      canvas-width="300"
+      canvas-height="300"
+    ></canvas>
+    
+    <!-- 中心圆 -->
+    <view class="wheel-center">
+      <view class="wheel-center-inner">转</view>
+    </view>
+    
+    <!-- 转盘边框 -->
+    <view class="wheel-border"></view>
+    
+    <!-- 换色按钮 -->
+    <view class="color-btn" bindtap="changeColors">
+      <text>🎨</text>
+    </view>
+  </view>
+
+  <!-- 结果展示 -->
+  <view class="result {{showResult ? 'show' : ''}}" bindlongpress="copyResult">
+    <view class="result-content" wx:if="{{result}}">
+      <text class="result-label">🎯 天意选择了：</text>
+      <text class="result-text">{{result}}</text>
+      <text class="result-hint-tip">长按复制</text>
+    </view>
+    <view class="result-hint" wx:if="{{!result}}">
+      <text>点击下方「转！」让命运来决定</text>
+    </view>
+  </view>
+
+  <!-- 输入区域 -->
+  <view class="input-area">
+    <input 
+      class="input" 
+      placeholder="输入选项，用逗号分隔" 
+      value="{{inputText}}" 
+      bindinput="onInput" 
+      confirm-type="done" 
+      bindconfirm="startSpin"
+    />
+    <text class="hint">例如：麻辣烫,炸鸡,寿司</text>
+  </view>
+
+  <!-- 按钮组 -->
+  <view class="btn-group">
+    <button 
+      class="btn spin-btn {{isSpinning ? 'disabled spinning-animation' : ''}}" 
+      bindtap="startSpin" 
+      disabled="{{isSpinning}}"
+    >
+      <text class="btn-icon">{{isSpinning ? '⏳' : '🎰'}}</text>
+      <text>{{isSpinning ? '转动中...' : '转！'}}</text>
+    </button>
+    <button class="btn reset-btn" bindtap="resetAll">
+      <text class="btn-icon">🔄</text>
+      <text>重来</text>
+    </button>
+    <button class="btn sound-btn" bindtap="toggleSound">
+      <text class="btn-icon">{{soundEnabled ? '🔊' : '🔇'}}</text>
+    </button>
+  </view>
+
+  <!-- 历史记录 -->
+  <view class="history-section">
+    <view class="history-header" bindtap="toggleHistory">
+      <view class="history-title">
+        <text>📜 历史记录 ({{history.length}})</text>
+      </view>
+      <view class="history-actions">
+        <text class="clear-btn" bindtap="clearHistory" wx:if="{{history.length > 0}}">清空</text>
+        <text class="arrow {{showHistory ? 'expanded' : ''}}">{{showHistory ? '▲' : '▼'}}</text>
+      </view>
+    </view>
+    <view class="history-list {{showHistory ? 'show' : ''}}">
+      <block wx:if="{{history.length > 0}}">
+        <view 
+          class="history-item" 
+          wx:for="{{history}}" 
+          wx:key="index"
+          bindtap="useHistory"
+          data-record="{{item}}"
+        >
+          <view class="history-info">
+            <text class="history-choices">{{item.choices}}</text>
+            <text class="history-result">→ {{item.result}}</text>
+          </view>
+          <view class="history-meta">
+            <text class="history-time">{{item.time}}</text>
+            <text class="delete-btn" catchtap="deleteHistory" data-index="{{index}}">✕</text>
+          </view>
+        </view>
+      </block>
+      <view class="history-empty" wx:else>
+        暂无记录，快去转一转吧～
+      </view>
+    </view>
+  </view>
+
+  <!-- 摇一摇状态指示 -->
+  <view class="shake-indicator {{shakeEnabled ? 'active' : ''}}">
+    <text class="shake-icon {{shakeEnabled ? 'shaking' : ''}}">📱</text>
+    <text class="shake-text">{{shakeEnabled ? '摇一摇已开启' : '摇一摇已暂停'}}</text>
+  </view>
+  
+  <!-- 底部安全区 -->
+  <view class="bottom-safe"></view>
+  
+  <!-- 版本信息 -->
+  <view class="version">v3.0 Lite</view>
+</view>
